@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>공대생은 위험하다</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+    @font-face {
+    font-family: 'PfStardust';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/PFStardust.woff') format('woff');
+    font-weight: normal;
+    font-display: swap;}
+  @font-face {
+  font-family: 'GPZ';
+  src: url('gpz-medium.ttf') format('truetype');}
+   
+    * {margin: 0;
+      padding: 0;
+      box-sizing: border-box;}
+
+    html {scroll-behavior: smooth;}
+
+    body {background: #0f0f0f;
+      color: #ffffff;
+      font-family: 'PfStardust', monospace;
+      overflow-x: hidden;
+      image-rendering: pixelated;}
+
+    section {min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 20px;
+      position: relative;}
+
+    h1 {font-family: 'PfStardust';
+      font-size: 30px;
+      word-break: keep-all;
+      line-height: 1;}   
+    .flex{display: flex; justify-content: space-between;}
+    
+    ul{list-style: none;}
+    ul li a{text-decoration: none;
+      display: block;
+      padding: 12px 12px;
+      color: white;}
+    ul li a:hover{background: white; color: black;
+      transition: all 1s;}
+
+   h1{color: white;font-size: 1.5rem;padding: 8px 12px;
+   cursor: pointer;}
+
+    
+    .screen 
+    {width: min(92vw, 1000px);
+      min-height: 70vh;
+      background: #87CEEB;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 24px;
+      position: relative;}
+
+    .title 
+    {text-align: center;
+      line-height: 1.8;}
+
+    .title h1 
+    {font-size: clamp(24px, 2vw, 36px);
+      margin-bottom: 18px;}
+
+    .title p 
+    {font-size: clamp(16px, 1vw, 24px);
+      opacity: 0.85;
+      line-height: 1.8;}
+
+    .scary-text {position: absolute;
+      top:70%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      font-family: 'GPZ';
+      text-shadow: 1px 0 red;
+      font-size: clamp(48px, 6vw, 96px);
+      color: #c40000;
+      text-align: center;
+      z-index: 10;}
+
+    .game-area 
+    {background: black;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+      flex: 1;}
+
+    .warning-area 
+    {background: #bb1b22;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      align-items: center;
+      justify-content: center;
+      flex: 1;}
+
+    .dialogue-box 
+     {width: 100%;
+      background: #000000;
+      padding: 20px;
+      font-size: 28px;
+      line-height: 2;
+      min-height: 130px;}
+
+    .system-text 
+     {font-size:30px;
+      color: #7fffd4;
+      display: block;
+      margin-bottom: 20px;
+      text-align: left; }
+
+      #tutorial .dialogue-box {font-size: 28px;
+       line-height: 2;}
+
+       #tutorial .system-text {font-size: 30px;}
+
+    .btn-row 
+      {display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;}
+
+    .pixel-btn 
+     {border: 3px solid #ffffff;
+      background: #1f1f1f;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 10px;
+      padding: 14px 18px;
+      cursor: pointer;
+      transition: 0.2s;}
+
+    .pixel-btn:hover 
+     {background: #ffffff;
+      color: #000000;
+      transform: translateY(-2px);}
+
+    .scroll-guide 
+     {position: absolute;
+      bottom: 30px;
+      font-size: 36px;
+      opacity: 0.7;
+      animation: blink 1.2s infinite;
+      text-align: center;
+      line-height: 1.8;}
+
+    @keyframes blink 
+     {0%, 100% { opacity: 0.35; }
+      50% { opacity: 1; }}
+
+    .fade-up {opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.9s ease, transform 0.9s ease;}
+
+    .fade-up.show {opacity: 1;
+      transform: translateY(0);}
+
+    .characters 
+    { display: flex;
+      justify-content: center;
+      align-items: end;
+      gap: 28px;
+      flex-wrap: wrap;
+      width: 100%;
+      margin-top: 6px; }
+    
+    .char-img {width: 160px;
+      height: 220px;
+      object-fit: contain;
+      display: block;
+      transition: transform 0.3s ease, filter 0.3s ease;}
+
+    .char-img:not(.ghost):hover {transform: scale(1.2) translateY(-10px);
+      filter: brightness(1.2);
+      cursor: pointer;}
+
+    .char-label 
+    { font-size: 12px;
+      opacity: 0.9;
+      text-align: center;
+      line-height: 1.6;}
+
+    .ghost {opacity: 0.18;
+      filter: grayscale(100%);
+      transform: translateY(8px);
+      pointer-events: none;}
+
+    .hud 
+    { width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0px;}
+    .hud-row 
+    { display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0px;}
+
+    .hud-left {width: 500px;}
+    .hud-right {display: flex;
+      flex-direction: column;
+      gap: 20px;}
+
+    .bar-box 
+    { width: 100%;
+      padding: 20px;}
+
+    .bar-label {font-size: 14px;
+      margin-bottom: 8px;
+      line-height: 1.6;}
+
+    .bar{width: 100%;
+      height: 28px;
+      border: 3px solid #fff;
+      background: gray;
+      overflow: hidden;}
+
+    .fill {height: 100%;
+      width: 0%;
+      transition: width 0.4s ease;}
+    .fill.work {background: #bb1b22;}
+    .fill.mental {
+      background: #1cba37;
+      width: 100%;}
+
+    .status-line {font-size: 18px;
+      line-height: 1.8;
+      text-align: center;
+      min-height: 18px;}
+
+    .clear-box {border: 4px solid #fff;
+      padding: 22px;
+      width: 100%;
+      text-align: center;
+      line-height: 2;
+      font-size: 12px;
+      background: rgba(127, 255, 212, 0.08);}
+    
+    .shake {animation: shake 0.45s linear 2;}
+
+    .exam-box {width: 70%;
+      border: 4px solid #fff;
+      background: black;
+      padding: 20px;
+      line-height: 2.1;
+      font-size: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);}
+
+    .answer-area {min-height: 100px;
+      border: 3px dashed #fff;
+      padding: 16px;
+      opacity: 0.6;
+      font-size: 30px;
+      color: red;}
+
+    .grade-board {width: 100%;
+      border: 4px solid #fff;
+      background: #0d0d0d;
+      padding: 24px;
+      text-align: center;
+      line-height: 2.4;
+      font-size: clamp(10px, 1vw, 14px);}
+
+    .ending-title {text-align: center;
+      font-size: 30px;
+      line-height: 2;
+      color: red}
+
+    .small-note {font-size: 20px;
+      opacity: 0.75;
+      line-height: 1.8;
+      text-align: center;}
+
+    /*배경 */
+    .scene-intro { background-image: url('image-bg1.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat:no-repeat;}
+    
+    .scene-loading { background-image: url('image-loding.jpg');
+      background-size: cover;
+      min-height: 70vh;
+      background-position: center;
+      background-attachment: fixed;}
+    
+    .scene-class { background: blue; }
+    
+    .scene-team {background: #bb1b22;}
+    .scene-team .screen {border: none;
+      box-shadow: none;
+      background: transparent;}
+    
+    .scene-night { background-image: url('image-bg2.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;}
+    .scene-night .screen {background: transparent;
+      border: none;
+      box-shadow: none;}
+    .scene-night .dialogue-box {background: none;
+      border: none;
+      box-shadow: none;
+      width: 100%;
+      margin: 0 auto;}
+    .scene-night .game-area 
+       {width: 700px;
+        height: auto;
+        margin: 700px auto 0;
+        padding: 10px;}
+    .scene-night .hud 
+       {width: 100%;
+        margin: 0 auto;}
+    .scene-night .btn-row 
+      {width: 100%;
+        margin: 0 auto;}
+    
+.scene-clear {background: linear-gradient(to bottom, #1d7c05, #13251b); 
+   display: block;}
+.clear-image {background-image: url('image-3.jpg');
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 700px;}
+.clear-text 
+  {text-align: center;
+   padding: 30px 20px;
+   color: white;
+  padding: 20px 20px;}
+.clear-text h1 {margin-bottom: 30px;}
+
+.scene-dark { background: linear-gradient(to bottom, #13251b, black); }
+    .dark-image {background-image: url('image-4.jpg');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 700px;
+    background-attachment: fixed;}
+
+.scene-dark2 {background-image: url('image-bg4.jpg');
+     background-size: cover;
+     background-position: center;
+     width: 100%;
+     height: 700px;
+     background-attachment: fixed;}
+
+.scene-dark3 {background-image: url('image-bg5.jpg');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 700px;}
+
+.scene-dark4 {background-image: url('image-bg3.jpg');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 700px;
+    background-attachment: fixed;}
+
+.scene-die { background-image: url('image-5.jpg'); 
+      background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 700px;
+  position: relative;
+  background-attachment: fixed;}
+
+.scene-end { background: linear-gradient(to bottom, #180f1d, #050505); }
+
+    @media (max-width: 768px)
+    {.screen {padding: 22px;
+        min-height: 78vh; }
+
+  
+      .pixel-btn {width: 100%;}
+      .dialogue-box,
+      .exam-box,
+      .grade-board {font-size: 9px;}
+
+  </style>
+</head>
+<body>
+  <nav>
+          <div class="wrap flex">
+            <div class="logo">
+              <h1>GAME START</h1>
+              </div>
+                <ul class="flex">
+                  <li><a href="#1">TUTORIAL</a></li>
+                  <li><a href="#2">PLAYER</a></li>
+                  <li><a href="#3">START</a></li>
+                  <li><a href="#4">ERROR</a></li>
+                  <li><a href="#5">END</a></li>
+            </ul>
+          </div>
+        </nav>
+
+  <!-- 1-->
+  <section class="scene-intro">
+     <div class="scroll-guide">
+        ▼ SCROLL TO START ▼
+      </div>
+ </section>
+ <section class="scene-loading">
+ </section>
+ <section  id="1">
+      <div class="game-area">
+        <div class="dialogue-box">
+          <span class="system-text">[ MISSION _ TEAM PROJECT ]</span>
+          플레이어는 한 교양필수 수업에 입장합니다.<br>
+          과제 구성: 시험 2회 + 조별 발표 1회<br><br>
+          플레이어는 지금부터 조별 발표를 시작합니다.
+        </div>
+    </div>
+</section>
+
+
+  <!-- 2-->
+  <section  id="2"  class="scene-class">
+    <div class="screen fade-up">
+
+      <div class="game-area">
+          <div class="dialogue-box">
+          <span class="system-text">[ LOCATION: 서울과학기술대학교 ]</span>
+          이곳은 서울과학기술대학교 입니다.<br>
+          [플레이어]는 홍일점이 되었습니다!<br><br>
+          캐릭터를 확인려면, 마우스를 올려보세요
+        </div>
+        </div>
+     <div class="characters">
+   <div class="char-wrap">
+
+  <img src="me.png" alt="player character" class="char-img">
+  <div class="char-label">PLAYER</div>
+</div>
+
+<div class="char-wrap">
+  <img src="ch1.png" alt="teammate A" class="char-img">
+  <div class="char-label">공대생1</div>
+</div>
+
+<div class="char-wrap">
+  <img src="ch2.png" alt="teammate B" class="char-img">
+  <div class="char-label">공대생2</div>
+</div>
+
+<div class="char-wrap">
+  <img src="ch3.png" alt="teammate C" class="char-img">
+  <div class="char-label">공대생3</div>
+</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 3-->
+ <section class="scene-team">
+  <div class="screen fade-up">
+  
+    <div class="warning-area">
+      <div class="dialogue-box">
+        <span class="system-text">[ WARNING ! ]</span>
+        [공대생2] 님, [공대생3] 님이 게임을 이탈했습니다.<br><br>
+        
+        4P모드에서 듀엣모드로 전환되었습니다.
+      </div>
+
+      <div class="characters">
+        <div class="char-wrap">
+          <img src="me.png" alt="player character" class="char-img">
+          <div class="char-label">PLAYER</div>
+        </div>
+
+        <div class="char-wrap">
+          <img src="ch1.png" alt="teammate A" class="char-img">
+          <div class="char-label">공대생1</div>
+        </div>
+
+        <div class="char-wrap">
+          <img src="ch2.png" alt="teammate B" class="char-img ghost">
+          <div class="char-label">공대생2</div>
+        </div>
+
+        <div class="char-wrap">
+          <img src="ch3.png" alt="teammate C" class="char-img ghost">
+          <div class="char-label">공대생3</div>
+        </div>
+      </div>
+
+      <div class="small-note">
+        TEAM MODE → DUO MODE
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- 4 -->
+  <section class="scene-night" id="3">
+    <div class="screen fade-up">
+      <div class="game-area">
+        <div class="dialogue-box">
+          [플레이어] 님과 [공대생1] 님은 인당 2인분을 맡아<br>
+          밤을 새워 발표를 준비해야 합니다!<br>
+          아래 버튼을 눌러 작업을 진행해보세요.
+        </div>
+
+        <div class="hud-row">
+  
+  <div class="hud-left">
+    <div class="bar-box">
+      <div class="bar-label">WORK</div>
+      <div class="bar">
+        <div class="fill work" id="workFill"></div>
+      </div>
+    </div>
+
+    <div class="bar-box">
+      <div class="bar-label">COFFEE</div>
+      <div class="bar">
+        <div class="fill mental" id="mentalFill"></div>
+      </div>
+    </div>
+
+    <div class="status-line" id="workStatus">
+      WORK 버튼을 눌러 발표를 준비하세요.
+    </div>
+  </div>
+
+  <div class="hud-right">
+    <button class="pixel-btn" id="workBtn">WORK</button>
+    <button class="pixel-btn" id="coffeeBtn">COFFEE</button>
+  </div>
+
+</div>
+     
+    </div>
+  </section>
+
+  <!-- 5-->
+  <section class="scene-clear">
+  <div class="clear-image"></div>
+  <div class="clear-text">
+    <h1>CLEAR!<br><br>
+
+      수고하셨습니다! 조별과제를 무사히 마무리했습니다.<br><br>
+      두 플레이어 사이에 유대가 형성되었습니다.</h1>
+
+    <div class="small-note">
+      RELATIONSHIP STATUS: +10
+    </div>
+  </div>
+
+</section>
+
+  <!-- 6-->
+  <section class="scene-dark" id="4">
+    <div class="dark-image"></div>
+    <div class="scary-text">[공대생1]님이 돌발행동을 저질렀습니다.</div>
+</section>
+
+<section class="scene-dark2">
+      <div class="game-area">
+    </div>
+  </section>
+
+<section class="scene-dark3">
+      <div class="game-area">
+    </div>
+  </section>
+
+  <!-- 7-->
+  <section class="scene-dark4">
+          <span class= "scary-text">[공대생1]님이 고백공격을 시전했습니다.</span>
+    </div>
+  </section>
+
+  <!-- 8-->
+  <section class="scene-die">
+        <div class="exam-box">
+          <div class="answer-area">
+           [공대생1] 님의 " 고백 공격 " 에 의해<br>[플레이어] 님이 사망했습니다.<br>
+          </div>
+     </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="scene-end" id="5">
+
+      <div class="game-area">
+        <div class="grade-board">
+          <span class="system-text"> PLAY AGAIN? </span>
+        </div>
+
+        <div class="ending-title">
+          끝까지 방심하지 말 것....<br>
+          공대생은 위험하다.
+        </div>
+
+        <div class="small-note">
+          본 콘텐츠는 실제 경험을 바탕으로 제작되었습니다.
+        </div>
+
+        <div class="btn-row">
+          <button class="pixel-btn" id="topBtn">GO TOP</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    //애니메이션
+    const fadeEls = document.querySelectorAll('.fade-up');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+        }
+      });
+    }, {
+      threshold: 0.2
+    });
+
+    fadeEls.forEach((el) => observer.observe(el));
+
+    // NIGHT MODE
+    const workBtn = document.getElementById('workBtn');
+    const coffeeBtn = document.getElementById('coffeeBtn');
+    const workFill = document.getElementById('workFill');
+    const mentalFill = document.getElementById('mentalFill');
+    const workStatus = document.getElementById('workStatus');
+
+    let workValue = 0;
+    let mentalValue = 100;
+
+    workBtn.addEventListener('click', () => {
+      if (workValue < 100) {
+        workValue += 20;
+        mentalValue -= 15;
+
+        if (workValue > 100) workValue = 100;
+        if (mentalValue < 0) mentalValue = 0;
+
+        workFill.style.width = workValue + '%';
+        mentalFill.style.width = mentalValue + '%';
+
+        if (workValue < 100) {
+          workStatus.textContent = '발표 준비 중... 작업량 증가, 멘탈 감소';
+        } else {
+          workStatus.textContent = '발표 준비 완료. 밤샘 클리어.';
+        }
+      }
+    });
+
+    coffeeBtn.addEventListener('click', () => {
+      if (mentalValue < 100) {
+        mentalValue += 10;
+        if (mentalValue > 100) mentalValue = 100;
+        mentalFill.style.width = mentalValue + '%';
+        workStatus.textContent = '카페인으로 잠시 연명 중...';
+      } else {
+        workStatus.textContent = '이미 각성 상태 최대치입니다.';
+      }
+    });
+
+    //맨 위로
+    document.addEventListener('DOMContentLoaded', () => {
+  const topBtn = document.getElementById('topBtn');
+
+  topBtn.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+});
+  </script>
+</body>
+</html>
